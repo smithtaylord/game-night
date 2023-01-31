@@ -1,5 +1,6 @@
 import { appState } from "../AppState.js";
 import { playerService } from "../Services/PlayersService.js";
+import { getFormData } from "../Utils/FormHandler.js"
 
 
 export class PlayersController {
@@ -7,12 +8,18 @@ export class PlayersController {
         let players = appState.players;
         // console.log('drawing players', players);
         let names = ''
-        players.forEach(player => names += `
-        <p> Players Name: ${player.name} ---<button onclick="app.playersController.decreasePlayersScore('${player.name}')">-</button>  
-        Score:${player.score} <button onclick="app.playersController.increasePlayersScore('${player.name}')">+</button></p>
-        `)
+        players.forEach(player => names += player.HTMLTemplate)
         // console.log(names);
         document.getElementById('players').innerHTML = names
+    }
+
+    addPlayer() {
+        window.event.preventDefault()
+        const form = window.event.target
+        let playerData = getFormData(form)
+        playerService.addPlayer(playerData)
+        form.reset()
+        this.drawPlayers()
     }
 
     increasePlayersScore(name) {
